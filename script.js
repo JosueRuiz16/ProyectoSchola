@@ -73,10 +73,24 @@ const bank = {
         { p: "ARCHIVO", s: "Documento digital donde guardas tu información" },
         { p: "NARANJO", s: "Apellido del ilustre poeta Rubén Darío (Félix Rubén...)" }
     ],
-    escape: [
-        { a: "Acertijo: Tengo teclas pero no piano, tengo ratón pero no animal. ¿Qué soy?", r: "computadora" },
-        { a: "Acertijo: Oro parece, plata no es. Quien no lo adivine, bien tonto es.", r: "platano" }
-    ]
+   escape: [
+        { 
+            a: "SISTEMA BLOQUEADO: Para salir, encuentra el intruso en esta lista de periféricos: Mouse, Monitor, Teclado, Café, Impresora.", 
+            r: "café" 
+        },
+        { 
+            a: "CÓDIGO DE ACCESO: Soy un lenguaje de marcas, me usas para la estructura de las webs y mis siglas son H_M_.", 
+            r: "html" 
+        },
+        { 
+            a: "ERROR DE LÓGICA: Si un ingeniero tiene 3 archivos y borra 2, pero luego recupera 1 y duplica todos los que le quedan... ¿Cuántos archivos tiene ahora?", 
+            r: "4" 
+        },
+        {
+            a: "PROTOCOLO DE SEGURIDAD: ¿Cómo se le llama al proceso de convertir esta web en una aplicación para celular? (A_K)",
+            r: "apk"
+        }
+    ],
 };
 
 // Variables de control
@@ -142,11 +156,59 @@ function render(type) {
 
     if (type === 'game-escape') {
         const d = getRandom(bank.escape);
-        ctx.innerHTML = `<h2 class="font-bold text-slate-800 mb-4">Escape Room</h2>
-            <div class="p-4 bg-slate-900 text-green-400 font-mono rounded mb-4">${d.a}</div>
-            <input type="text" id="esc-in" class="w-full p-3 border rounded mb-4" placeholder="Respuesta...">
-            <button onclick="checkEsc('${d.r}')" class="w-full bg-slate-900 text-white py-3 rounded">DESBLOQUEAR</button>`;
+        ctx.innerHTML = `
+            <div class="text-center p-2 bg-slate-900 rounded-3xl border-4 border-slate-800 shadow-2xl">
+                <div class="text-5xl mb-4 animate-pulse">🔒</div>
+                <h2 class="text-xl font-bold mb-4 text-green-500 font-mono tracking-tighter">TERMINAL DE SEGURIDAD</h2>
+                
+                <div class="p-4 bg-black text-green-400 font-mono rounded-xl mb-6 text-left text-sm border border-green-900/50 shadow-[inset_0_2px_10px_rgba(0,255,0,0.1)]">
+                    <span class="text-green-700">user@admin:~$</span> run challenge.sh<br>
+                    <span class="text-white">${d.a}</span>
+                </div>
+
+                <div class="relative mb-4">
+                    <input type="text" id="esc-in" 
+                        class="w-full p-4 bg-slate-800 border-2 border-slate-700 rounded-xl text-white font-mono outline-none focus:border-green-500 transition-all text-center" 
+                        placeholder="INGRESE RESPUESTA...">
+                </div>
+
+                <button onclick="checkEsc('${d.r}')" 
+                    class="w-full bg-green-600 hover:bg-green-500 text-white py-4 rounded-xl font-black tracking-widest active:scale-95 transition-all shadow-[0_0_20px_rgba(34,197,94,0.3)]">
+                    EJECUTAR COMANDO
+                </button>
+                
+                <p class="mt-4 text-[10px] text-slate-500 font-mono uppercase">Acceso restringido - Solo personal autorizado</p>
+            </div>
+        `;
+        // Enfocar el input automáticamente
+        setTimeout(() => document.getElementById('esc-in').focus(), 500);
     }
+
+function checkEsc(ans) {
+    const input = document.getElementById('esc-in');
+    const val = input.value.trim().toLowerCase();
+    
+    if(val === ans.toLowerCase()) {
+        // Efecto de éxito
+        input.classList.replace('border-slate-700', 'border-green-500');
+        input.classList.add('bg-green-900/20');
+        
+        setTimeout(() => {
+            alert("SISTEMA DESBLOQUEADO. Acceso concedido" + name);
+            showSection('menu');
+        }, 600);
+    } else {
+        // Efecto de error (sacudida tipo terminal)
+        input.classList.add('border-red-600', 'animate-shake');
+        input.value = "";
+        input.placeholder = "ACCESO DENEGADO - REINTENTE";
+        
+        setTimeout(() => {
+            input.classList.remove('animate-shake');
+            input.classList.replace('border-red-600', 'border-slate-700');
+        }, 500);
+    }
+}
 }
 
 // 5. LÓGICAS DE VALIDACIÓN
